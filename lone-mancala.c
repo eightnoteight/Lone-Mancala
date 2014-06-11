@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
 #include <ncurses.h>
+#include <string.h>
+#include <time.h>
 int row,col;
 typedef enum { False, True } Bool;
 const Bool number[][15] ={
@@ -17,6 +17,18 @@ const Bool number[][15] ={
      {1,1,1,1,0,1,1,1,1,1,0,1,1,1,1}, /* 8 */
      {1,1,1,1,0,1,1,1,1,0,0,1,1,1,1}, /* 9 */
 };
+int winningboards[9][6]={
+	0,0,4,2,2,1,
+	0,5,3,1,1,0,
+	0,5,3,1,1,1,
+	6,4,2,3,1,1,
+	6,4,2,3,1,0,
+	6,4,2,0,2,1,
+	6,4,2,0,2,0,
+	6,4,2,0,0,1,
+	6,4,2,0,0,0,
+};
+int *board;
 void draw_number(int n, int x, int y) 
 {
     int i, sy = y;
@@ -42,36 +54,26 @@ void draw_number(int n, int x, int y)
     refresh();
      return;
 }
-int winningboards[9][6]={
-	0,0,4,2,2,1,
-	0,5,3,1,1,0,
-	0,5,3,1,1,1,
-	6,4,2,3,1,1,
-	6,4,2,3,1,0,
-	6,4,2,0,2,1,
-	6,4,2,0,2,0,
-	6,4,2,0,0,1,
-	6,4,2,0,0,0,
-};
 void prinboard(int *p,int bowl)/* row print start at (row-7)/2                */
 {					  		   /* col print at's 3, 11, 19, 27, 35, 43, 51, 59*/
-	draw_number(*p, (row-7)/2,  3);p++;
-	draw_number(*p, (row-7)/2, 11);p++;
-	draw_number(*p, (row-7)/2, 19);p++;
-	draw_number(*p, (row-7)/2, 27);p++;
-	draw_number(*p, (row-7)/2, 35);p++;
-	draw_number(*p, (row-7)/2, 43);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 +  0);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 +  8);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 + 16);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 + 24);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 + 32);p++;
+	draw_number(*p, (row-7)/2, (col-66)/2 + 40);p++;
 	if (!(bowl/10))
 	{
-		draw_number(bowl, (row-7)/2, 59);
+		draw_number(bowl, (row-7)/2, (col-66)/2 + 60);
 		return ;
 	}
-	draw_number(bowl/10, (row-7)/2, 51);
-	draw_number(bowl, (row-7)/2, 59);
+	draw_number(bowl/10, (row-7)/2, (col-66)/2 + 52);
+	draw_number(bowl%10, (row-7)/2, (col-66)/2 + 60);
 	return ;
 }
 int *boardinit()
 {
+	srand(time(NULL));
 	return winningboards[rand()%9];
 }
 int legalmoves(int *p)
@@ -91,38 +93,54 @@ void modifyboard(int seeder,int *b)
 }
 void princhoices(int highlight)/* spill the junk which aren't changing.. */
 {
-	static WINDOW *cois;
 	if (highlight==1)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 3, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 +  0, "enter!  ");
 	if (highlight==1)
 		attroff(A_REVERSE);
 	if (highlight==2)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 11, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 +  8, "enter!  ");
 	if (highlight==2)
 		attroff(A_REVERSE);
 	if (highlight==3)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 19, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 16, "enter!  ");
 	if (highlight==3)
 		attroff(A_REVERSE);
 	if (highlight==4)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 27, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 24, "enter!  ");
 	if (highlight==4)
 		attroff(A_REVERSE);
 	if (highlight==5)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 35, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 32, "enter!  ");
 	if (highlight==5)
 		attroff(A_REVERSE);
 	if (highlight==6)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, 43, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 40, "enter!  ");
 	if (highlight==6)
 		attroff(A_REVERSE);
 	refresh();
+}
+int isitillegal(int n)
+{
+	if (*(board+n-1)==7-n)
+		return 0;
+	return 1;
+}
+void alert(int noticeactivate)
+{
+	char c[15]="              ";
+	if (noticeactivate)
+		strcpy(c,"Illegal move");
+	if (c[1]=='l')
+		attron(A_STANDOUT);
+	mvprintw((row - ((row-7)/2 + 6))/2, (col - 12)/2, "%s", c);
+	if (c[1]=='l')
+	attroff(A_STANDOUT);
 }
 int userinput()
 {
@@ -147,8 +165,13 @@ int userinput()
 					highlight++;
 				break;
 			case 10:
+				if (isitillegal(highlight))
+				{
+					alert(1);
+					break;
+				}
+				alert(0);
 				return highlight;
-				break;
 		}
 		princhoices(highlight);
 		refresh();
@@ -164,21 +187,17 @@ int boardstatus(int *check)
 }
 void Winner()
 {
-	int row,col;
-	getmaxyx(stdscr,row,col);
 	clear();
 	mvprintw(row/2,(col-7)/2, "WINNER!");
 }
 void Loser()
 {
-	int row,col;
-	getmaxyx(stdscr,row,col);
 	clear();
 	mvprintw(row/2,(col-8)/2, "LOSER :(");
 }
 int gameinit(int rows, int cols)
 {
-	int *board=boardinit();
+	board=boardinit();
 	int bowl=0;
 	while(legalmoves(board))
 	{
