@@ -31,8 +31,7 @@ int winningboards[][6]={
 	{6,4,2,0,0,0},
 };
 int *board;
-void draw_number(int n, int x, int y) 
-{
+void draw_number(int n, int x, int y){
     int i, sy = y;
     for(i = 0; i < 30; ++i, ++sy)
     {
@@ -71,28 +70,24 @@ void prinboard(int *p,int bowl)/* row print start at (row-7)/2                */
 	draw_number(bowl%10, (row-7)/2, (col-66)/2 + 60);
 	return ;
 }
-int *boardinit()
-{
+int *boardinit(){
 	srand(time(NULL));
 	return winningboards[rand()%9];
 }
-int legalmoves(int *p)
-{
+int legalmoves(int *p){
 	int i;
 	for (i = 0; i < 6; ++i)
 		if (*(p+i)==(6-i))
 			return 1;
 	return 0;
 }
-void modifyboard(int seeder,int *b)
-{
+void modifyboard(int seeder,int *b){
 	int i;
 	*(b+seeder-1)=0;
 	for (i = seeder; i < 6; ++i)
 		(*(b+i))++;
 }
-void princhoices(int highlight)
-{
+void princhoices(int highlight){
 	if (highlight==1)
 		attron(A_REVERSE);
 	mvprintw((row-7)/2 + 8, (col-66)/2 +  0, "enter!");
@@ -130,12 +125,10 @@ void princhoices(int highlight)
 		attroff(A_REVERSE);
 	refresh();
 }
-int isitillegal(int n)
-{
+int isitillegal(int n){
 	return (*(board+n-1)==7-n)?0:1;
 }
-void alert(int noticeactivate)
-{
+void alert(int noticeactivate){
 	char c[15]="              ";
 	if (noticeactivate)
 		strcpy(c,"Illegal move");
@@ -145,8 +138,7 @@ void alert(int noticeactivate)
 	if (c[1]=='l')
 		attroff(A_STANDOUT);
 }
-int userinput()
-{
+int userinput(){
 	int c;/* char range for all the keys will exceed it's size so int */
 	static int highlight=1;
 	princhoices(highlight);
@@ -181,26 +173,22 @@ int userinput()
 		refresh();
 	}
 }
-int boardstatus(int *check)
-{
+int boardstatus(int *check){
 	int i;
 	for (i = 0; i < 6; ++i)
 		if (*(check+i))
 			return 0;
 	return 1;
 }
-void Winner()
-{
+void Winner(){
 	clear();
 	mvprintw(row/2,(col-10)/2, "WINNER! :)");
 }
-void Loser()
-{
+void Loser(){
 	clear();
 	mvprintw(row/2,(col-8)/2, "LOSER :(");
 }
-int gameinit(int rows, int cols)
-{
+int gameinit(int rows, int cols){
 	board=boardinit();
 	int bowl=0;
 	while(legalmoves(board))
@@ -213,8 +201,7 @@ int gameinit(int rows, int cols)
 	prinboard(board,bowl);
 	return boardstatus(board);
 }
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]){
 	int i;
 	initscr();
 	raw();
