@@ -3,6 +3,8 @@
 #include <ncurses.h>
 #include <string.h>
 #include <time.h>
+#define MinWID 66
+#define MinHEI 22
 int row,col;
 typedef enum { False, True } Bool;
 const Bool number[][15] ={
@@ -89,36 +91,41 @@ void modifyboard(int seeder,int *b)
 	for (i = seeder; i < 6; ++i)
 		(*(b+i))++;
 }
-void princhoices(int highlight)/* spill the junk which aren't changing.. */
+void princhoices(int highlight)
 {
 	if (highlight==1)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 +  0, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 +  0, "enter!");
 	if (highlight==1)
 		attroff(A_REVERSE);
+	printw("  ");
 	if (highlight==2)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 +  8, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 +  8, "enter!");
 	if (highlight==2)
 		attroff(A_REVERSE);
+	printw("  ");
 	if (highlight==3)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 + 16, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 16, "enter!");
 	if (highlight==3)
 		attroff(A_REVERSE);
+	printw("  ");
 	if (highlight==4)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 + 24, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 24, "enter!");
 	if (highlight==4)
 		attroff(A_REVERSE);
+	printw("  ");
 	if (highlight==5)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 + 32, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 32, "enter!");
 	if (highlight==5)
 		attroff(A_REVERSE);
+	printw("  ");
 	if (highlight==6)
 		attron(A_REVERSE);
-	mvprintw((row-7)/2 + 8, (col-66)/2 + 40, "enter!  ");
+	mvprintw((row-7)/2 + 8, (col-66)/2 + 40, "enter!");
 	if (highlight==6)
 		attroff(A_REVERSE);
 	refresh();
@@ -137,11 +144,10 @@ void alert(int noticeactivate)
 	mvprintw((row - ((row-7)/2 + 6))/2, (col - 12)/2, "%s", c);
 	if (c[1]=='l')
 		attroff(A_STANDOUT);
-	return ;
 }
 int userinput()
 {
-	int c;
+	int c;/* char range for all the keys will exceed it's size so int */
 	static int highlight=1;
 	princhoices(highlight);
 	refresh();
@@ -162,7 +168,7 @@ int userinput()
 				else
 					highlight++;
 				break;
-			case 10:
+			case 10:/* Enter Key */
 				if (isitillegal(highlight))
 				{
 					alert(1);
@@ -186,7 +192,7 @@ int boardstatus(int *check)
 void Winner()
 {
 	clear();
-	mvprintw(row/2,(col-7)/2, "WINNER!");
+	mvprintw(row/2,(col-10)/2, "WINNER! :)");
 }
 void Loser()
 {
@@ -215,21 +221,24 @@ int main(int argc, char const *argv[])
 	noecho();
 	curs_set(0);
 	keypad(stdscr,TRUE);
-	attron(A_BOLD);
 	getmaxyx(stdscr,row,col);
+	if(row < MinHEI || col < MinWID)
+	{
+		mvprintw(row/2, (col-24)/2, "Increase Terminal Size.!");
+		getch();
+		endwin();
+		exit(1);
+	}
+	attron(A_BOLD);
 	mvprintw(0,(col-27)/2,"Welcome to the Lone-Mancala\n");
 	move(2,0);
 	for (i = 0; i < col; ++i)
 		printw("-");
 	attroff(A_BOLD);
 	if(gameinit(row,col))
-	{
 		Winner();
-	}
 	else
-	{
 		Loser();
-	}
 	getch();
 	endwin();
 	return 0;
