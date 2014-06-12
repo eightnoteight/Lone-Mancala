@@ -17,16 +17,16 @@ const Bool number[][15] ={
      {1,1,1,1,0,1,1,1,1,1,0,1,1,1,1}, /* 8 */
      {1,1,1,1,0,1,1,1,1,0,0,1,1,1,1}, /* 9 */
 };
-int winningboards[9][6]={
-	0,0,4,2,2,1,
-	0,5,3,1,1,0,
-	0,5,3,1,1,1,
-	6,4,2,3,1,1,
-	6,4,2,3,1,0,
-	6,4,2,0,2,1,
-	6,4,2,0,2,0,
-	6,4,2,0,0,1,
-	6,4,2,0,0,0,
+int winningboards[][6]={
+	{0,0,4,2,2,1},
+	{0,5,3,1,1,0},
+	{0,5,3,1,1,1},
+	{6,4,2,3,1,1},
+	{6,4,2,3,1,0},
+	{6,4,2,0,2,1},
+	{6,4,2,0,2,0},
+	{6,4,2,0,0,1},
+	{6,4,2,0,0,0},
 };
 int *board;
 void draw_number(int n, int x, int y) 
@@ -47,9 +47,7 @@ void draw_number(int n, int x, int y)
 	    	attroff(A_STANDOUT);
         }
         else
-        {
         	mvaddch(x,sy,' ');
-        }
     }
     refresh();
      return;
@@ -127,9 +125,7 @@ void princhoices(int highlight)/* spill the junk which aren't changing.. */
 }
 int isitillegal(int n)
 {
-	if (*(board+n-1)==7-n)
-		return 0;
-	return 1;
+	return (*(board+n-1)==7-n)?0:1;
 }
 void alert(int noticeactivate)
 {
@@ -140,25 +136,27 @@ void alert(int noticeactivate)
 		attron(A_STANDOUT);
 	mvprintw((row - ((row-7)/2 + 6))/2, (col - 12)/2, "%s", c);
 	if (c[1]=='l')
-	attroff(A_STANDOUT);
+		attroff(A_STANDOUT);
+	return ;
 }
 int userinput()
 {
-	int c,highlight=1;
-	princhoices(1);
+	int c;
+	static int highlight=1;
+	princhoices(highlight);
 	refresh();
 	while(1)
 	{
 		c=getch();
 		switch(c)
 		{
-			case 260:
+			case 260:/* Left Key */
 				if (highlight==1)
 					highlight=6;
 				else
 					highlight--;
 				break;
-			case 261:
+			case 261:/* Right Key */
 				if (highlight==6)
 					highlight=1;
 				else
