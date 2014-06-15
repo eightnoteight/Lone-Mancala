@@ -34,3 +34,25 @@ int winningboards[][6]={
 	{6,4,2,0,0,0},
 };
 int *board=winningboards[0];
+
+/* Prototypes */
+
+
+/* lone-mancala.c */
+int gameinit(int , int );
+
+/* winnerandlose.c */
+void Winner();
+void Loser();
+
+/* printing.c */
+void draw_number(int , int , int );
+void prinboard(int );
+void princhoices(int );
+void alert(int );
+
+/* gamelogics.c */
+int legalmoves(int*);
+void modifyboard(int seeder);
+int boardstatus(int *check);
+int userinput();

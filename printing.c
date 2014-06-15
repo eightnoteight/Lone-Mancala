@@ -1,4 +1,3 @@
-
 void draw_number(int n, int x, int y){
     
     int i, sy = y;
