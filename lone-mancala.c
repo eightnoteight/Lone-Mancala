@@ -1,17 +1,20 @@
 #include "lone-mancala.h"
+#include "printing.c"
+#include "winnerandloser.c"
+#include "gamelogics.c"
 
 int gameinit(int rows, int cols){
-	srand(getpid());
+	srand(time(NULL));
 	board=winningboards[rand()%9];
 	int bowl=0;
 	while(legalmoves(board))
 	{
-		prinboard(board,bowl);
+		prinboard(&bowl);
 		refresh();
-		modifyboard(userinput(), board);
+		modifyboard(userinput());
 		bowl++;
 	}
-	prinboard(board,bowl);
+	prinboard(&bowl);
 	return boardstatus(board);
 }
 

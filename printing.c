@@ -21,7 +21,7 @@ void draw_number(int n, int x, int y){
     return;
 }
 
-void prinboard(int bowl){
+void prinboard(int* bowl){
 
 	int *p=board;
 	draw_number(*p, (row-7)/2, (col-66)/2 +  0);p++;
@@ -30,14 +30,14 @@ void prinboard(int bowl){
 	draw_number(*p, (row-7)/2, (col-66)/2 + 24);p++;
 	draw_number(*p, (row-7)/2, (col-66)/2 + 32);p++;
 	draw_number(*p, (row-7)/2, (col-66)/2 + 40);p++;
-	if (!(bowl/10))
+	if (!(*bowl/10))
 	{
-		draw_number(bowl, (row-7)/2, (col-66)/2 + 60);
+		draw_number(*bowl, (row-7)/2, (col-66)/2 + 60);
     	refresh();
 		return ;
 	}
-	draw_number(bowl/10, (row-7)/2, (col-66)/2 + 52);
-	draw_number(bowl%10, (row-7)/2, (col-66)/2 + 60);
+	draw_number((*bowl)/10, (row-7)/2, (col-66)/2 + 52);
+	draw_number((*bowl)%10, (row-7)/2, (col-66)/2 + 60);
     refresh();
 	return ;
 }

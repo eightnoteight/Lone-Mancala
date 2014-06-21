@@ -47,7 +47,7 @@ void Loser();
 
 /* printing.c */
 void draw_number(int , int , int );
-void prinboard(int );
+void prinboard(int* );
 void princhoices(int );
 void alert(int );
 

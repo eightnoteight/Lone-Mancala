@@ -44,7 +44,7 @@ int userinput(){
 					highlight++;
 				break;
 			case 10:/* Enter Key */
-				if ((*(board+n-1)==7-n)?0:1)
+				if (*(board+highlight-1)!=7-highlight)
 				{
 					alert(1);
 					break;
